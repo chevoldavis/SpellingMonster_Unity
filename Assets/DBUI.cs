@@ -38,7 +38,10 @@ public class DBUI : MonoBehaviour {
 	}
 
 	public void rowTapped(string id){
+		//Set the current wordlist
+		//PlayerPrefs.SetInt("CurrentWordList",int.Parse (id));
 		Debug.Log ("Tapped - "+ id);
+		//Application.LoadLevel ("Words");
 	}
 
 	private void loadList(){
@@ -74,7 +77,7 @@ public class DBUI : MonoBehaviour {
 				if(btn.name.Equals ("DelButton")){
 					btn.onClick.AddListener(() => showConfirmPanel(captured));
 				}else if(btn.name.Equals ("EditButton")){
-
+					btn.onClick.AddListener(() => showEdit(captured));
 				}
 				//Debug.Log (btn.name);
 			}
@@ -116,6 +119,12 @@ public class DBUI : MonoBehaviour {
 
 		//Set the current wordlist
 		PlayerPrefs.SetInt("CurrentWordList",int.Parse (listID));
+	}
+
+	public void showEdit(string listID){
+		//Set the current wordlist
+		PlayerPrefs.SetInt("CurrentWordList",int.Parse (listID));
+		Application.LoadLevel ("Words");
 	}
 
 	//Save the word list title
