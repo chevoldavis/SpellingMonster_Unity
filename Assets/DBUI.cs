@@ -68,6 +68,16 @@ public class DBUI : MonoBehaviour {
 			//Get the id for later reference
 			string captured = list.id.ToString ();
 			buttonClone.onClick.AddListener(() => rowTapped(captured));
+			
+			Button[] buttons =  buttonClone.GetComponentsInChildren<Button> ();
+			foreach (Button btn in buttons) {
+				if(btn.name.Equals ("DelButton")){
+					btn.onClick.AddListener(() => showConfirmPanel(captured));
+				}else if(btn.name.Equals ("EditButton")){
+
+				}
+				//Debug.Log (btn.name);
+			}
 		}
 	}
 
@@ -83,6 +93,7 @@ public class DBUI : MonoBehaviour {
 	public void showPanel(){
 		errorText.GetComponent<Text>().color = new Color(0,0,0,0);
 		addPanel.SetActive (true);
+
 		//Show the AddPanel and its children
 		addListAnimator.Play ("AddListTitleFadeIn");
 	}
@@ -97,10 +108,14 @@ public class DBUI : MonoBehaviour {
 	}
 
 	//Show the Confirmation Panel
-	public void showConfirmPanel(){
+	public void showConfirmPanel(string listID){
 		confirmPanel.SetActive (true);
+
 		//Show the ConfirmPanel and its children
 		confirmAnimator.Play ("ConfirmFadeIn");
+
+		//Set the current wordlist
+		PlayerPrefs.SetInt("CurrentWordList",int.Parse (listID));
 	}
 
 	//Save the word list title
@@ -124,18 +139,33 @@ public class DBUI : MonoBehaviour {
 		}
 	}
 
+	public void deleteList(){
+		deleteWordList ();
+		hidePanel ();
+		loadList ();
+	}
+
 	//Add the word list title
 	private void addListTitle() {
 		string sql = "INSERT INTO SM_WordList (title, isActive) VALUES(?,?) ";
-
 		dbManager.Execute (sql, txtListName.text, 1);
+	}
+
+	//Delete the word list
+	private void deleteWordList(){
+		string sql = "DELETE FROM SM_WordList WHERE id = ?";
+		dbManager.Execute (sql, PlayerPrefs.GetInt("CurrentWordList"));
+
+		//Also remove any words related to that list
+		string wordsSql = "DELETE FROM SM_Words WHERE wordListID = ?";
+		dbManager.Execute (wordsSql, PlayerPrefs.GetInt("CurrentWordList"));
 	}
 	
 	//Get all word lists
 	private List<wordList> getLists() {
 		string sql = "SELECT * FROM SM_WordList";
-
 		List<wordList> wordLists = dbManager.Query<wordList>(sql);
+
 		return wordLists;
 	}
 }
