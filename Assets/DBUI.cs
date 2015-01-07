@@ -37,6 +37,11 @@ public class DBUI : MonoBehaviour {
 		loadList ();
 	}
 
+	public void goBack()
+	{
+		Application.LoadLevel ("WordListManager");
+	}
+
 	public void rowTapped(string id){
 		//Set the current wordlist
 		//PlayerPrefs.SetInt("CurrentWordList",int.Parse (id));

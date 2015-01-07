@@ -274,7 +274,8 @@ public class WordDBUI : MonoBehaviour
 		{
 				Application.LoadLevel ("WordList");
 		}
-	
+		
+
 		//Get all words
 		private List<wordItem> getLists ()
 		{
