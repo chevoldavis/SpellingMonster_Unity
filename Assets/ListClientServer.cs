@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-//using System.Net.Sockets;
-//using System.Net;
 using LostPolygon.System.Net;
 using LostPolygon.System.Net.Sockets;
 using System.Text;
@@ -17,8 +15,9 @@ public class ListClientServer : MonoBehaviour {
 	[System.Serializable]
 	public struct listPayload{
 		public string listName;
-		public List<String> words;
+		public List<string> words;
 		//public AudioClip[] audibleWords;
+		public List<string> audibleWords;
 	}
 
 
@@ -45,6 +44,10 @@ public class ListClientServer : MonoBehaviour {
 			StartReceivingIP();
 		}
 	}
+
+	//----------------------
+	//------------------------------ SERVER CODE -----------------------------------
+	//----------------------
 
 	void launchServer() {
 		outputTxt.text = "Starting Server...\n";
@@ -89,11 +92,15 @@ public class ListClientServer : MonoBehaviour {
 		Debug.Log("Client " + connectionCount + " connected from " + client.ipAddress + ":" + client.port);
 		outputTxt.text = outputTxt.text + "Client " + connectionCount + " connected from " + client.ipAddress + ":" + client.port + "\n";
 
-		//DUMMY PAYLOAD
+		//DUMMY PAYLOAD   **NEED TO EXTEND DYNAMICALLY
+		byte[] bytes = File.ReadAllBytes(Application.persistentDataPath + "/106.wav");
+		List<string> testAudio = new List<string>();
+		testAudio.Add (Convert.ToBase64String (bytes));
+
 		List<string> testWords = new List<string>();
 		testWords.Add ("RED");
 		testWords.Add ("BLUE");
-		listPayload testPayload = new listPayload{ listName="C Test List",words=testWords };
+		listPayload testPayload = new listPayload{ listName="C Test List",words=testWords,audibleWords=testAudio };
 
 		BinaryFormatter binFormatter = new BinaryFormatter(); // Create Formatter and Stream to process our data
 		MemoryStream memStream = new MemoryStream();
@@ -121,8 +128,10 @@ public class ListClientServer : MonoBehaviour {
 		Application.LoadLevel ("WordListManager");
 	}
 
-
+	
+	//----------------------
 	//------------------------------ CLIENT CODE -----------------------------------
+	//----------------------
 	
 	public void StartReceivingIP ()
 	{
@@ -190,20 +199,33 @@ public class ListClientServer : MonoBehaviour {
 		MemoryStream memStream = new MemoryStream();
 		
 		/* This line will write the byte data we received into the stream The second parameter specifies the offset, since we want to start at the beginning of the stream we set this to 0.
-    * The third   parameter specifies the maximum number of bytes to be written into the stream, so we use the amount of bytes that our data contains by passing the length of our byte array. */
+    	* The third   parameter specifies the maximum number of bytes to be written into the stream, so we use the amount of bytes that our data contains by passing the length of our byte array. */
 		memStream.Write(serializedWLInfo,0,serializedWLInfo.Length); 
 		
 		/* After writing our data, our streams internal "reader" is now at the last position of the stream. We shift it back to the beginning of our stream so we can start reading from the very    
-     *  beginning */
+     	*  beginning */
 		memStream.Seek(0, SeekOrigin.Begin); 
 		
 		listPayload wlInfo = (listPayload)binFormatter.Deserialize(memStream); // Deserialize our data and Cast it into a PlayerInfo object
+
+		//GET LIST NAME
 		Debug.Log("Got List - " + wlInfo.listName);
 		outputTxt.text = outputTxt.text + "\nAdded new List:\n " + wlInfo.listName;
+
 		//GET WORDS
 		foreach (string newWord in wlInfo.words) // Loop through List with foreach.
 		{
 			outputTxt.text = outputTxt.text + "\nNew word: " + newWord;
+			Debug.Log("Got Word - " + newWord);
+		}
+
+		//GET AUDIO
+		Debug.Log ("-------COUNT OF AUDIBLE WORDS: " + wlInfo.audibleWords.Count.ToString ());
+		foreach (string newAudio in wlInfo.audibleWords)
+		{
+			byte[] bytes = System.Convert.FromBase64String(newAudio);
+			//******* FILE NAME SHOULD BE DYNAMIC BASED OFF THE WORD AND WORD ID	
+			File.WriteAllBytes (Application.persistentDataPath+"/9999.wav",bytes);
 		}
 	}
 }
