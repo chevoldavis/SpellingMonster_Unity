@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.UI;
 using LostPolygon.System.Net;
@@ -23,6 +24,8 @@ public class ListClientServer : MonoBehaviour {
 	public Text outputTxt;
 	public NetworkView networkView;
 	public bool isServer = true;
+	public GameObject instPanel;
+	public Animator instAnimator;
 
 
 	private int connectionCount = 0;
@@ -37,18 +40,27 @@ public class ListClientServer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if(isServer){
-			launchServer ();
-		}else{
-			StartReceivingIP();
-		}
+		//if(isServer){
+		//	launchServer ();
+		//}else{
+		//	StartReceivingIP();
+		//}
+		//instPanel.SetActive(false);
+		//instPanel.SetActive (true);
+		showPanel ();
+	}
+
+	public void showPanel(){
+		instAnimator.Play ("SInstPanelFadeIn");
+		instAnimator.Play ("CInstPanelFadeIn");
 	}
 
 	//----------------------
 	//------------------------------ SERVER CODE -----------------------------------
 	//----------------------
 
-	void launchServer() {
+	public void launchServer() {
+		hidePanel ();
 		outputTxt.text = "Starting Server...\n";
 		bool useNat = !Network.HavePublicAddress();
 		Network.InitializeServer(32, 25000, useNat);
@@ -127,6 +139,13 @@ public class ListClientServer : MonoBehaviour {
 		Application.LoadLevel ("WordListManager");
 	}
 
+	//Hide the AddPanel
+	public void hidePanel ()
+	{
+		//Hide the AddPanel and its children
+		instAnimator.Play ("SInstPanelFadeOut");
+		instAnimator.Play ("CInstPanelFadeOut");
+	}
 	
 	//----------------------
 	//------------------------------ CLIENT CODE -----------------------------------
@@ -134,6 +153,7 @@ public class ListClientServer : MonoBehaviour {
 	
 	public void StartReceivingIP ()
 	{
+		hidePanel ();
 		try {
 			if (receiver == null) {
 				receiver = new UdpClient (remotePort);
