@@ -26,6 +26,8 @@ public class ListClientServer : MonoBehaviour {
 	public bool isServer = true;
 	public GameObject instPanel;
 	public Animator instAnimator;
+	public GameObject listSelectPanel;
+	public Animator listSelAnimator;
 
 
 	private int connectionCount = 0;
@@ -40,19 +42,18 @@ public class ListClientServer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//if(isServer){
-		//	launchServer ();
-		//}else{
-		//	StartReceivingIP();
-		//}
-		//instPanel.SetActive(false);
-		//instPanel.SetActive (true);
+		if(isServer){
+			listSelectPanel.SetActive(false);
+		}
 		showPanel ();
 	}
 
 	public void showPanel(){
-		instAnimator.Play ("SInstPanelFadeIn");
-		instAnimator.Play ("CInstPanelFadeIn");
+		if(isServer){
+			instAnimator.Play ("SInstPanelFadeIn");
+		}else{
+			instAnimator.Play ("CInstPanelFadeIn");
+		}
 	}
 
 	//----------------------
@@ -134,6 +135,14 @@ public class ListClientServer : MonoBehaviour {
 		outputTxt.text = outputTxt.text + "Client disconnected from " + client.ipAddress + ":" + client.port + " Client Count is now: "+ connectionCount + "\n";
 	}
 
+	public void showSelPanel(){
+		if(isServer){
+			listSelectPanel.SetActive(true);
+			instAnimator.Play ("SInstPanelFadeOut");
+			listSelAnimator.Play ("ShareListSelFadeIn");
+		}
+	}
+
 	public void goBack(){
 		Network.Disconnect();
 		Application.LoadLevel ("WordListManager");
@@ -142,9 +151,12 @@ public class ListClientServer : MonoBehaviour {
 	//Hide the AddPanel
 	public void hidePanel ()
 	{
-		//Hide the AddPanel and its children
-		instAnimator.Play ("SInstPanelFadeOut");
-		instAnimator.Play ("CInstPanelFadeOut");
+		if(isServer){
+			instAnimator.Play ("SInstPanelFadeOut");
+			listSelAnimator.Play ("ShareListSelFadeOut");
+		}else{
+			instAnimator.Play ("CInstPanelFadeOut");
+		}
 	}
 	
 	//----------------------
