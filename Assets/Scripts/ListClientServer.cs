@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary; 
 using System.Collections.Generic;
+using SimpleSQL;
 
 
 public class ListClientServer : MonoBehaviour {
@@ -28,7 +29,23 @@ public class ListClientServer : MonoBehaviour {
 	public Animator instAnimator;
 	public GameObject listSelectPanel;
 	public Animator listSelAnimator;
+	public SimpleSQLManager dbManager;
 
+	public class wordListTitle
+	{
+		public string title { get; set; }
+	}
+	
+	public class wordContent
+	{
+		public int id { get; set; }
+		public string word { get; set; }
+	}
+
+	public class audioContent
+	{
+		public string fileName { get; set; }
+	}
 
 	private int connectionCount = 0;
 	UdpClient sender;
@@ -104,15 +121,25 @@ public class ListClientServer : MonoBehaviour {
 		Debug.Log("Client " + connectionCount + " connected from " + client.ipAddress + ":" + client.port);
 		outputTxt.text = outputTxt.text + "Client " + connectionCount + " connected from " + client.ipAddress + ":" + client.port + "\n";
 
-		//DUMMY PAYLOAD   **NEED TO EXTEND DYNAMICALLY
-		byte[] bytes = File.ReadAllBytes(Application.persistentDataPath + "/106.wav");
-		List<string> testAudio = new List<string>();
-		testAudio.Add (Convert.ToBase64String (bytes));
+		//WORDLIST NAME
+		string listname = getListName ();
 
+		//AUDIO
+		List<string> testAudio = new List<string>();
+
+		//WORDS
 		List<string> testWords = new List<string>();
-		testWords.Add ("RED");
-		testWords.Add ("BLUE");
-		listPayload testPayload = new listPayload{ listName="C Test List",words=testWords,audibleWords=testAudio };
+		List<wordContent> myWords = getWords ();
+		foreach (wordContent word in myWords) {
+			testWords.Add (word.word);
+			//Add audio
+			if(wordHasAudio (word.id.ToString ())){
+				byte[] bytes = File.ReadAllBytes(Application.persistentDataPath + "/" + word.id + ".wav");
+				testAudio.Add (Convert.ToBase64String (bytes));
+			}
+		}
+
+		listPayload testPayload = new listPayload{ listName=listname,words=testWords,audibleWords=testAudio };
 
 		BinaryFormatter binFormatter = new BinaryFormatter(); // Create Formatter and Stream to process our data
 		MemoryStream memStream = new MemoryStream();
@@ -126,6 +153,38 @@ public class ListClientServer : MonoBehaviour {
 		networkView.RPC ("GetPayload", client, serializedWLInfo);
 		Debug.Log ("Sent Payload Via RPC!");
 	}
+
+	private string getListName(){
+		string curShareId = PlayerPrefs.GetInt("ShareWordList").ToString ();
+		string listName = "";
+		bool recordExists = false;
+		string sql = "SELECT * FROM SM_WordList WHERE id = " + curShareId;
+		wordListTitle myTitle = dbManager.QueryFirstRecord<wordListTitle> (out recordExists, sql);
+		if (recordExists) {
+			listName = myTitle.title;
+		}
+		
+		return listName;
+	}
+
+	private List<wordContent> getWords ()
+	{
+		string curShareId = PlayerPrefs.GetInt("ShareWordList").ToString ();
+		string sql = "SELECT id, word FROM SM_Words WHERE  wordListID = " + curShareId;
+		List<wordContent> words = dbManager.Query<wordContent> (sql);
+		
+		return words;
+	}
+
+	private bool wordHasAudio (string wordID)
+	{
+		bool hasAudio = false;
+		string sql = "SELECT fileName FROM SM_WordAudio WHERE wordID = " + wordID;
+		audioContent myAudio = dbManager.QueryFirstRecord<audioContent> (out hasAudio, sql);
+		
+		return hasAudio;
+	}
+
 
 	void OnPlayerDisconnected(NetworkPlayer client) {
 		connectionCount--;

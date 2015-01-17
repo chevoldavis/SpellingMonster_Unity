@@ -16,9 +16,7 @@ public class listPanelController : MonoBehaviour {
 	{
 		[PrimaryKey]
 		public int id { get; set; }
-		
 		public string title { get; set; }
-		
 		public int isActive { get; set; }
 	}
 
@@ -32,8 +30,7 @@ public class listPanelController : MonoBehaviour {
 	{
 		//Set the current wordlist
 		PlayerPrefs.SetInt("ShareWordList",int.Parse (id));
-		Debug.Log ("Tapped - " + id);
-		//Application.LoadLevel ("Words");
+		//Debug.Log ("Tapped - " + id);
 		loadList ();
 	}
 
@@ -47,7 +44,7 @@ public class listPanelController : MonoBehaviour {
 		int scrollOffest = 0;
 		
 		List<wordListItem> myWords = getLists ();
-		Debug.Log ("Word Count: " + myWords.Count.ToString ());
+		//Debug.Log ("Word Count: " + myWords.Count.ToString ());
 		foreach (wordListItem wordList in myWords) {
 			Button buttonClone = (Button)Instantiate (prefabButton, transform.position, transform.rotation);
 			buttonClone.transform.parent = listPanel.transform;
@@ -74,18 +71,6 @@ public class listPanelController : MonoBehaviour {
 					}
 				}
 			}
-			
-			//Button[] buttons = buttonClone.GetComponentsInChildren<Button> ();
-			//foreach (Button btn in buttons) {
-			//	if (btn.name.Equals ("DelButton")) {
-			//		btn.onClick.AddListener (() => showConfirmPanel (captured));
-			//	} else if (btn.name.Equals ("EditButton")) {
-			//		btn.onClick.AddListener (() => showEditPanel (captured));
-			//	} else if (btn.name.Equals ("AudioButton")) {
-			//		btn.onClick.AddListener (() => showAudioPanel (captured));
-			//	}
-				//Debug.Log (btn.name);
-			//}
 		}
 	}
 
