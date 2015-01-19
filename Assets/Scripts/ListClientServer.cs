@@ -13,12 +13,17 @@ using SimpleSQL;
 
 
 public class ListClientServer : MonoBehaviour {
+	[System.Serializable]
+	public struct wordPackage
+	{
+		public string word {get; set;}
+		public string audio {get; set;}
+	}
 
 	[System.Serializable]
 	public struct listPayload{
 		public string listName;
-		public List<string> words;
-		public List<string> audibleWords;
+		public List<wordPackage> wordsPackage;
 	}
 
 
@@ -45,6 +50,11 @@ public class ListClientServer : MonoBehaviour {
 	public class audioContent
 	{
 		public string fileName { get; set; }
+	}
+
+	public class lastDBId
+	{
+		public string id { get; set; }
 	}
 
 	private int connectionCount = 0;
@@ -125,21 +135,23 @@ public class ListClientServer : MonoBehaviour {
 		string listname = getListName ();
 
 		//AUDIO
-		List<string> testAudio = new List<string>();
+		List<wordPackage> myWordPkg = new List<wordPackage>();
 
-		//WORDS
-		List<string> testWords = new List<string>();
+
 		List<wordContent> myWords = getWords ();
 		foreach (wordContent word in myWords) {
-			testWords.Add (word.word);
+			wordPackage newPkg = new wordPackage();
+			newPkg.word = word.word;
+			newPkg.audio = "";
 			//Add audio
 			if(wordHasAudio (word.id.ToString ())){
 				byte[] bytes = File.ReadAllBytes(Application.persistentDataPath + "/" + word.id + ".wav");
-				testAudio.Add (Convert.ToBase64String (bytes));
+				newPkg.audio = Convert.ToBase64String (bytes);
 			}
+			myWordPkg.Add(newPkg);
 		}
 
-		listPayload testPayload = new listPayload{ listName=listname,words=testWords,audibleWords=testAudio };
+		listPayload testPayload = new listPayload{ listName=listname,wordsPackage=myWordPkg };
 
 		BinaryFormatter binFormatter = new BinaryFormatter(); // Create Formatter and Stream to process our data
 		MemoryStream memStream = new MemoryStream();
@@ -300,22 +312,31 @@ public class ListClientServer : MonoBehaviour {
 
 		//GET LIST NAME
 		Debug.Log("Got List - " + wlInfo.listName);
-		outputTxt.text = outputTxt.text + "\nAdded new List:\n " + wlInfo.listName;
+		outputTxt.text = outputTxt.text + "\nAdded new List:\n" + wlInfo.listName;
+		
+		//INSERT LIST NAME
+		bool lastInsert = false;
+		string lastRowQuery = "SELECT id from SM_WordList order by id DESC limit 1";//"last_insert_rowid()";
+		string sql = "INSERT INTO SM_WordList (title, isActive) VALUES(?,1) ";
+		dbManager.Execute (sql, wlInfo.listName);
+		lastDBId lastID = dbManager.QueryFirstRecord<lastDBId> (out lastInsert, lastRowQuery);
 
-		//GET WORDS
-		foreach (string newWord in wlInfo.words) // Loop through List with foreach.
+		//GET WORD PACKAGE
+		foreach (wordPackage newPkg in wlInfo.wordsPackage)
 		{
-			outputTxt.text = outputTxt.text + "\nNew word: " + newWord;
-			Debug.Log("Got Word - " + newWord);
-		}
+			string wordSql = "INSERT INTO SM_Words (wordListID, word) VALUES(?,?) ";
+			dbManager.Execute (wordSql, int.Parse ( lastID.id ), newPkg.word);
 
-		//GET AUDIO
-		Debug.Log ("-------COUNT OF AUDIBLE WORDS: " + wlInfo.audibleWords.Count.ToString ());
-		foreach (string newAudio in wlInfo.audibleWords)
-		{
-			byte[] bytes = System.Convert.FromBase64String(newAudio);
-			//******* FILE NAME SHOULD BE DYNAMIC BASED OFF THE WORD AND WORD ID	
-			File.WriteAllBytes (Application.persistentDataPath+"/9999.wav",bytes);
+			lastRowQuery = "SELECT id from SM_Words order by id DESC limit 1";
+			lastDBId lastWordID = dbManager.QueryFirstRecord<lastDBId> (out lastInsert, lastRowQuery);
+			
+			if(!newPkg.audio.Equals (""))
+			{
+				byte[] bytes = System.Convert.FromBase64String(newPkg.audio);
+				File.WriteAllBytes (Application.persistentDataPath+"/" + lastWordID.id + ".wav",bytes);
+				string wordAudioSql = "INSERT INTO SM_WordAudio (wordID, fileName) VALUES(?,?) ";
+				dbManager.Execute (wordAudioSql, lastWordID.id, lastWordID.id + ".wav");
+			}
 		}
 	}
 }

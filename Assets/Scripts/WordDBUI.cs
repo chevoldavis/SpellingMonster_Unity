@@ -204,11 +204,10 @@ public class WordDBUI : MonoBehaviour
 		{
 				recordAudioButton.enabled = false;
 				//Get button text
-				Text buttonTxt = recordAudioButton.GetComponentInChildren <Text> ();
+				//Text buttonTxt = recordAudioButton.GetComponentInChildren <Text> ();
 				if (startedRecording) {
 						startedRecording = false;
-						buttonTxt.text = "R";
-						//Microphone.End (null);
+						//buttonTxt.text = "R";
 						SavWav.Save (PlayerPrefs.GetInt ("CurrentWord").ToString (), wordAudio);
 						//audio.clip = wordAudio;
 						//audio.Play ();
@@ -218,7 +217,7 @@ public class WordDBUI : MonoBehaviour
 						}
 				} else {
 						startedRecording = true;
-						buttonTxt.text = "S";
+						//buttonTxt.text = "S";
 						//IF FILE EXISTS THEN DELETE FIRST   ************************************************* 
 						if (wordHasAudio ()) {
 								//#if UNITY_IPHONE
@@ -248,8 +247,11 @@ public class WordDBUI : MonoBehaviour
 				yield return AudioToLoadPath;
 
 				if (WebFileExists ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav")) {
-						audio.clip = AudioToLoadPath.GetAudioClip (false);
+						audio.clip = AudioToLoadPath.GetAudioClip(false);
+		
+						audio.volume = 1.0f;
 						audio.Play ();
+						Debug.Log ("Playing File");
 				}
 		}
 	
