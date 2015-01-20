@@ -32,7 +32,7 @@ using System.Collections.Generic;
 public static class SavWav {
 	
 	const int HEADER_SIZE = 44;
-	
+
 	public static bool Save(string filename, AudioClip clip) {
 		if (!filename.ToLower().EndsWith(".wav")) {
 			filename += ".wav";
@@ -107,8 +107,8 @@ public static class SavWav {
 	}
 	
 	static void ConvertAndWrite(FileStream fileStream, AudioClip clip) {
-		
-		var samples = new float[clip.samples];
+		var samples = new float[clip.samples*clip.channels];
+		//var samples = new float[clip.samples];
 		
 		clip.GetData(samples, 0);
 		
@@ -119,7 +119,8 @@ public static class SavWav {
 		//bytesData array is twice the size of
 		//dataSource array because a float converted in Int16 is 2 bytes.
 		
-		int rescaleFactor = 32767; //to convert float to Int16
+		//int rescaleFactor = 32767; //to convert float to Int16
+		float rescaleFactor = 32767;
 		
 		for (int i = 0; i<samples.Length; i++) {
 			intData[i] = (short) (samples[i] * rescaleFactor);

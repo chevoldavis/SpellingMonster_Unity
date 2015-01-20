@@ -269,12 +269,6 @@ public class ListClientServer : MonoBehaviour {
 			string[] payload = receivedString.Split (separators,StringSplitOptions.None);
 			string serverIP = payload[1];
 			
-			connectToServer(serverIP);
-		}
-	}
-	
-	void connectToServer(string serverIP){
-		if(hasConnected == false){
 			outputTxt.text = "Connecting to server at " + serverIP + "\n";
 			Network.Connect (serverIP,25000);
 		}
@@ -311,8 +305,7 @@ public class ListClientServer : MonoBehaviour {
 		listPayload wlInfo = (listPayload)binFormatter.Deserialize(memStream); // Deserialize our data and Cast it into a PlayerInfo object
 
 		//GET LIST NAME
-		Debug.Log("Got List - " + wlInfo.listName);
-		outputTxt.text = outputTxt.text + "\nAdded new List:\n" + wlInfo.listName;
+		outputTxt.text = outputTxt.text + "\nDownloading List\n";
 		
 		//INSERT LIST NAME
 		bool lastInsert = false;
@@ -338,5 +331,9 @@ public class ListClientServer : MonoBehaviour {
 				dbManager.Execute (wordAudioSql, lastWordID.id, lastWordID.id + ".wav");
 			}
 		}
+		
+		Debug.Log("Got List - " + wlInfo.listName);
+		outputTxt.text = outputTxt.text + "\nAdded new List:\n" + wlInfo.listName;
+		Network.Disconnect();
 	}
 }

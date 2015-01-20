@@ -2,7 +2,10 @@
 using System.Collections;
 
 public class WordLIstManagerController : MonoBehaviour {
-	
+
+	void Start(){
+	}
+
 	public void gotoCreatEditList()
 	{
 		Application.LoadLevel ("WordList");

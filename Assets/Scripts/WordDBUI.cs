@@ -27,6 +27,8 @@ public class WordDBUI : MonoBehaviour
 		public Text listTitle;
 		public Button playAudioButton;
 		public Button recordAudioButton;
+		public Sprite stopImg;
+		public Sprite recordImg;
 		private AudioClip wordAudio;
 		public AudioSource audio;
 		private bool startedRecording = false;
@@ -203,11 +205,10 @@ public class WordDBUI : MonoBehaviour
 		public void recordAudio ()
 		{
 				recordAudioButton.enabled = false;
-				//Get button text
-				//Text buttonTxt = recordAudioButton.GetComponentInChildren <Text> ();
+				recordAudioButton.image.sprite = recordImg;
+
 				if (startedRecording) {
 						startedRecording = false;
-						//buttonTxt.text = "R";
 						SavWav.Save (PlayerPrefs.GetInt ("CurrentWord").ToString (), wordAudio);
 						//audio.clip = wordAudio;
 						//audio.Play ();
@@ -215,10 +216,11 @@ public class WordDBUI : MonoBehaviour
 						} else {
 								saveWordAudio (PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
 						}
+						playAudioButton.enabled = true;
 				} else {
 						startedRecording = true;
-						//buttonTxt.text = "S";
-						//IF FILE EXISTS THEN DELETE FIRST   ************************************************* 
+						recordAudioButton.image.sprite = stopImg;
+						//IF FILE EXISTS THEN DELETE FIRST 
 						if (wordHasAudio ()) {
 								//#if UNITY_IPHONE
 								//	System.IO.File.Delete("/private" + Application.persistentDataPath+"/"+PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
@@ -247,8 +249,10 @@ public class WordDBUI : MonoBehaviour
 				yield return AudioToLoadPath;
 
 				if (WebFileExists ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav")) {
-						audio.clip = AudioToLoadPath.GetAudioClip(false);
-		
+						audio.clip = AudioToLoadPath.GetAudioClip (false);
+			
+						AudioListener.volume = 1.0f;
+						audio.ignoreListenerVolume = true;
 						audio.volume = 1.0f;
 						audio.Play ();
 						Debug.Log ("Playing File");
