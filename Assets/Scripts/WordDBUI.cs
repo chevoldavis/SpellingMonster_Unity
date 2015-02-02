@@ -89,7 +89,6 @@ public class WordDBUI : MonoBehaviour
 				//Set the current wordlist
 				//PlayerPrefs.SetInt("CurrentWordList",int.Parse (id));
 				Debug.Log ("Tapped - " + id);
-				//Application.LoadLevel ("Words");
 		}
 	
 		private void loadList ()
@@ -128,7 +127,6 @@ public class WordDBUI : MonoBehaviour
 								} else if (btn.name.Equals ("AudioButton")) {
 										btn.onClick.AddListener (() => showAudioPanel (captured));
 								}
-								//Debug.Log (btn.name);
 						}
 				}
 		}
@@ -137,10 +135,8 @@ public class WordDBUI : MonoBehaviour
 		public void showConfirmPanel (string wordID)
 		{
 				confirmPanel.SetActive (true);
-		
 				//Show the ConfirmPanel and its children
 				confirmAnimator.Play ("ConfirmFadeIn");
-		
 				//Set the current wordlist
 				PlayerPrefs.SetInt ("CurrentWord", int.Parse (wordID));
 		}
@@ -174,9 +170,9 @@ public class WordDBUI : MonoBehaviour
 				wordAudio = new AudioClip ();
 				startedRecording = false;
 				if (wordHasAudio ()) {
-						playAudioButton.enabled = true;
+						playAudioButton.interactable = true;
 				} else {
-						playAudioButton.enabled = false;
+						playAudioButton.interactable = false;
 				}
 		}
 
@@ -210,23 +206,17 @@ public class WordDBUI : MonoBehaviour
 				if (startedRecording) {
 						startedRecording = false;
 						SavWav.Save (PlayerPrefs.GetInt ("CurrentWord").ToString (), wordAudio);
-						//audio.clip = wordAudio;
-						//audio.Play ();
 						if (wordHasAudio ()) {
 						} else {
 								saveWordAudio (PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
 						}
-						playAudioButton.enabled = true;
+						playAudioButton.interactable = true;
 				} else {
 						startedRecording = true;
 						recordAudioButton.image.sprite = stopImg;
 						//IF FILE EXISTS THEN DELETE FIRST 
 						if (wordHasAudio ()) {
-								//#if UNITY_IPHONE
-								//	System.IO.File.Delete("/private" + Application.persistentDataPath+"/"+PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
-								//#else
 								System.IO.File.Delete (Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
-								//#endif
 						}
 						wordAudio = Microphone.Start (null, false, 2, 44100);
 				}
@@ -326,13 +316,10 @@ public class WordDBUI : MonoBehaviour
 				} else {
 						//If all goes well add to DB
 						updateWordText ();
-			
 						//Hide the Panel
 						hidePanel ();
-			
 						//Reload the list
 						loadList ();
-			
 						//Clear text
 						txtEWordName.text = "";
 				}
@@ -350,8 +337,15 @@ public class WordDBUI : MonoBehaviour
 		{
 				string wordsSql = "DELETE FROM SM_Words WHERE id = ?";
 				dbManager.Execute (wordsSql, PlayerPrefs.GetInt ("CurrentWord"));
-		}
 
+				//IF FILE EXISTS THEN DELETE IT 
+				if (wordHasAudio ()) {
+						string wordAudioSql = "DELETE FROM SM_WordAudio WHERE wordID = ?";
+						dbManager.Execute (wordAudioSql, PlayerPrefs.GetInt ("CurrentWord"));
+						System.IO.File.Delete (Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
+				}
+		}
+	
 		//Save the word 
 		public void saveWord ()
 		{
@@ -362,13 +356,10 @@ public class WordDBUI : MonoBehaviour
 				} else {
 						//If all goes well add to DB
 						addWord ();
-			
 						//Hide the Panel
 						hidePanel ();
-			
 						//Reload the list
 						loadList ();
-			
 						//Clear text
 						txtWordName.text = "";
 				}

@@ -24,6 +24,21 @@ public class DBUI : MonoBehaviour {
 		public int isActive { get; set; }
 	}
 
+	public class wordContent
+	{
+		public string id { get; set; }
+	}
+	
+	public class audioContent
+	{
+		public string fileName { get; set; }
+	}
+	public class lastDBId
+	{
+		public string id { get; set; }
+	}
+
+
 	void Awake ()
 	{
 		//Application.targetFrameRate = 60;
@@ -43,10 +58,12 @@ public class DBUI : MonoBehaviour {
 	}
 
 	public void rowTapped(string id){
-		//Set the current wordlist
-		//PlayerPrefs.SetInt("CurrentWordList",int.Parse (id));
-		Debug.Log ("Tapped - "+ id);
-		//Application.LoadLevel ("Words");
+		//Set the active wordlist
+		PlayerPrefs.SetInt("ActiveWordList",int.Parse (id));
+		//Disable all wordlists and set this one as active
+		deactivateLists ();
+		setActiveList(int.Parse (id));
+		loadList ();
 	}
 
 	private void loadList(){
@@ -60,11 +77,15 @@ public class DBUI : MonoBehaviour {
 		
 		List<wordList> myLists = getLists ();
 		Debug.Log ("WordList Count: " + myLists.Count.ToString ());
+		int activeListID = PlayerPrefs.GetInt ("ActiveWordList");
 		foreach (wordList list in myLists)
 		{
 			Button buttonClone = (Button)Instantiate (prefabButton,transform.position,transform.rotation);
 			buttonClone.transform.parent = listPanel.transform;
 			buttonClone.transform.localScale = Vector3.one;
+			if(list.id.Equals (activeListID)){
+				buttonClone.image.color = Color.green;
+			}
 			//Change the button text to list title
 			Text btnTxt =  buttonClone.GetComponentInChildren<Text> ();
 			btnTxt.text = list.title;
@@ -84,7 +105,6 @@ public class DBUI : MonoBehaviour {
 				}else if(btn.name.Equals ("EditButton")){
 					btn.onClick.AddListener(() => showEdit(captured));
 				}
-				//Debug.Log (btn.name);
 			}
 		}
 	}
@@ -110,7 +130,6 @@ public class DBUI : MonoBehaviour {
 	public void cancel(){
 		//Hide the Panel
 		hidePanel ();
-		
 		//Reload the list
 		loadList ();
 	}
@@ -141,13 +160,10 @@ public class DBUI : MonoBehaviour {
 		}else{
 			//If all goes well add to DB
 			addListTitle ();
-			
 			//Hide the Panel
 			hidePanel ();
-			
 			//Reload the list
 			loadList ();
-			
 			//Clear text
 			txtListName.text = "";
 		}
@@ -159,10 +175,27 @@ public class DBUI : MonoBehaviour {
 		loadList ();
 	}
 
+	private void deactivateLists(){
+		string sql = "UPDATE SM_WordList SET isActive = 0 WHERE isActive = 1";
+		dbManager.Execute (sql);
+	}
+
+	private void setActiveList(int listID){
+		string sql = "UPDATE SM_WordList SET isActive = 1 WHERE id = ?";
+		dbManager.Execute(sql,listID);
+	}
+
 	//Add the word list title
 	private void addListTitle() {
+		bool lastInsert = false;
+		deactivateLists ();
 		string sql = "INSERT INTO SM_WordList (title, isActive) VALUES(?,?) ";
 		dbManager.Execute (sql, txtListName.text, 1);
+		
+		string lastRowQuery = "SELECT id from SM_WordList order by id DESC limit 1";
+		lastDBId lastWordID = dbManager.QueryFirstRecord<lastDBId> (out lastInsert, lastRowQuery);
+
+		PlayerPrefs.SetInt("ActiveWordList",int.Parse (lastWordID.id));
 	}
 
 	//Delete the word list
@@ -170,9 +203,21 @@ public class DBUI : MonoBehaviour {
 		string sql = "DELETE FROM SM_WordList WHERE id = ?";
 		dbManager.Execute (sql, PlayerPrefs.GetInt("CurrentWordList"));
 
-		//Also remove any words related to that list
-		string wordsSql = "DELETE FROM SM_Words WHERE wordListID = ?";
-		dbManager.Execute (wordsSql, PlayerPrefs.GetInt("CurrentWordList"));
+		string wordSql = "SELECT id FROM SM_Words WHERE wordListID = " + PlayerPrefs.GetInt("CurrentWordList");
+		List<wordContent> words = dbManager.Query<wordContent> (wordSql);
+
+		foreach(wordContent myWord in words){
+			Debug.Log ("DELETING A WORD");
+			//Delete any audio
+			if (wordHasAudio ()) {
+				string wordAudioSql = "DELETE FROM SM_WordAudio WHERE wordID = ?";
+				dbManager.Execute (wordAudioSql, myWord.id);
+				System.IO.File.Delete (Application.persistentDataPath + "/" + myWord.id + ".wav");
+			}
+			//Delete the word
+			string delWordsSql = "DELETE FROM SM_Words WHERE id = ?";
+			dbManager.Execute (delWordsSql, int.Parse(myWord.id));
+		}
 	}
 	
 	//Get all word lists
@@ -181,5 +226,15 @@ public class DBUI : MonoBehaviour {
 		List<wordList> wordLists = dbManager.Query<wordList>(sql);
 
 		return wordLists;
+	}
+
+	private bool wordHasAudio ()
+	{
+		bool hasAudio = false;
+		
+		string sql = "SELECT fileName FROM SM_WordAudio WHERE wordID = " + PlayerPrefs.GetInt ("CurrentWord");
+		audioContent myAudio = dbManager.QueryFirstRecord<audioContent> (out hasAudio, sql);
+		
+		return hasAudio;
 	}
 }
