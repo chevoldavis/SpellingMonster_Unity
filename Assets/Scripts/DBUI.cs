@@ -41,7 +41,7 @@ public class DBUI : MonoBehaviour {
 
 	void Awake ()
 	{
-		//Application.targetFrameRate = 60;
+
 	}
 
 	// Use this for initialization
@@ -64,6 +64,7 @@ public class DBUI : MonoBehaviour {
 		deactivateLists ();
 		setActiveList(int.Parse (id));
 		loadList ();
+		MessageCenterController.Instance.displayMessage ("Selected WordList is now the Active list");
 	}
 
 	private void loadList(){
@@ -167,12 +168,14 @@ public class DBUI : MonoBehaviour {
 			//Clear text
 			txtListName.text = "";
 		}
+		MessageCenterController.Instance.displayMessage ("WordList Added");
 	}
 
 	public void deleteList(){
 		deleteWordList ();
 		hidePanel ();
 		loadList ();
+		MessageCenterController.Instance.displayMessage ("WordList Deleted");
 	}
 
 	private void deactivateLists(){

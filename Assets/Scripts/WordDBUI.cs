@@ -322,6 +322,7 @@ public class WordDBUI : MonoBehaviour
 						loadList ();
 						//Clear text
 						txtEWordName.text = "";
+						MessageCenterController.Instance.displayMessage ("Word Updated");
 				}
 		}
 
@@ -330,7 +331,8 @@ public class WordDBUI : MonoBehaviour
 				deleteWord ();
 				hidePanel ();
 				loadList ();
-		}
+				MessageCenterController.Instance.displayMessage ("Word Deleted from WordList");
+	}
 
 		//Delete the word
 		private void deleteWord ()
@@ -362,6 +364,7 @@ public class WordDBUI : MonoBehaviour
 						loadList ();
 						//Clear text
 						txtWordName.text = "";
+						MessageCenterController.Instance.displayMessage ("Word Added to WordList");
 				}
 		}
 
