@@ -60,7 +60,7 @@ public class HomeManager : MonoBehaviour {
 			}
 		}
 
-		//MessageCenterController.Instance.displayMessage ("Going to games screen");
+		MessageCenterController.Instance.displayMessage ("Going to games screen");
 	}
 
 	private int getActiveList()
