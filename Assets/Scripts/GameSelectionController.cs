@@ -16,7 +16,8 @@ public class GameSelectionController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		Application.targetFrameRate = -1;
+		QualitySettings.vSyncCount = 0;
 	}
 	
 	// Update is called once per frame

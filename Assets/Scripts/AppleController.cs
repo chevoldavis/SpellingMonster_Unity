@@ -22,6 +22,7 @@ public class AppleController : MonoBehaviour {
 		apple.transform.position = new Vector3 (Random.Range(30.0f, 640.0f), transform.position.y, 0);
 		Text letter = apple.GetComponentInChildren<Text>();
 		string randomLetter = Alphabet[Random.Range(0, Alphabet.Length)];
+		apple.rigidbody2D.gravityScale = 20.0f;
 		Debug.Log(randomLetter);
 		letter.text = randomLetter;
 	}

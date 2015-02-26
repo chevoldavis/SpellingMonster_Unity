@@ -18,8 +18,10 @@ public class HomeManager : MonoBehaviour {
 	private bool launched = false;
 	public string versionNum;
 
+
 	// Use this for initialization
 	void Start () {
+		Application.targetFrameRate = -1;
 		launched = false;
 		popInAnimator.enabled = false;
 		txtVersion.text = "v " + versionNum;
