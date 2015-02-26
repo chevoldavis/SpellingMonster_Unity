@@ -48,6 +48,7 @@ public class HomeManager : MonoBehaviour {
 		activeList = PlayerPrefs.GetInt ("ActiveWordList");
 		if(activeList>0){
 			Debug.Log ("We have an active list: "+activeList);
+			Application.LoadLevel ("GameSelection");
 		}else{
 			//try and grab from the db
 			int curActiveList = getActiveList();
@@ -60,7 +61,7 @@ public class HomeManager : MonoBehaviour {
 			}
 		}
 
-		MessageCenterController.Instance.displayMessage ("Going to games screen");
+		//MessageCenterController.Instance.displayMessage ("Going to games screen");
 	}
 
 	private int getActiveList()

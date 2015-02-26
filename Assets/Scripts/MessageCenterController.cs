@@ -5,7 +5,7 @@ using UnityEngine.UI;
 // MESSSAGECENTER USAGE INSTRUCTIONS:
 // ADD PREAFB TO SCENE Xpos = 0 Ypos = -450
 // CALL MESSAGECENTER FROM SCENE CODE LIKE THIS:
-// MessageCenterController.Instance.displayMessage ("Some message rto display to the user goes here");
+// MessageCenterController.Instance.displayMessage ("Some message to display to the user goes here");
 
 
 // SIMPLE SINGLETON PATTER SO ONLY 1 INSTANCE IS EVER CREATED
