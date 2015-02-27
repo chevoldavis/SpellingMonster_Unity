@@ -22,6 +22,7 @@ public class HomeManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Application.targetFrameRate = -1;
+		QualitySettings.vSyncCount = 0;
 		launched = false;
 		popInAnimator.enabled = false;
 		txtVersion.text = "v " + versionNum;
