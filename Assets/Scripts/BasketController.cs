@@ -40,6 +40,7 @@ public class BasketController : MonoBehaviour {
 		string letterCaught = "";
 		letterCaught = other.gameObject.GetComponentInChildren<Text>().text;
 		Debug.Log("Caught: " + letterCaught);
+		Messenger.Broadcast<string>("letter selected", letterCaught);
 		Destroy(other.gameObject);
 		}
 	}
