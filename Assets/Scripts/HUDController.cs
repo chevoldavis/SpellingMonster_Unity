@@ -38,17 +38,19 @@ public class HUDController : MonoBehaviour {
 	}
 
 	void alignWordsAndLetters(){
-		currentWord.rectTransform.position = new Vector3(320, currentWord.rectTransform.position.y ,0.0f);
-		float curXPos = currentWord.rectTransform.position.x + (currentWord.rectTransform.sizeDelta.x/2);//currentWord.transform.position.x + (float)(currentWord.rectTransform.sizeDelta.x * .5);
-		string word = currentWord.text;
+		currentWord.rectTransform.position = new Vector3(Screen.width/2, currentWord.rectTransform.position.y ,0.0f);
+		float curXPos =  currentWord.rectTransform.position.x + (currentWord.rectTransform.sizeDelta.x/2);//currentWord.transform.position.x + (float)(currentWord.rectTransform.sizeDelta.x * .5);
+		//string word = currentWord.text;
 		float offset = 0.0f;
+		//Debug.Log("---- HERE ---- " + currentWord.font.characterInfo.Length.ToString ());
 		
-		for(int i=0;i<word.Length;i++)
-		{
-			CharacterInfo testInfo = currentWord.font.characterInfo[i];
-			
-			offset = offset + testInfo.width;
-		}
+		//for(int i=0;i<word.Length;i++)
+		//for(int i=0;i<currentWord.font.characterInfo.Length;i++)
+		//{
+		//	CharacterInfo testInfo = currentWord.font.characterInfo[i];
+		//	offset = offset + testInfo.advance;
+		//}
+		offset = currentWord.preferredWidth;
 		currentLetter.rectTransform.position = new Vector3(curXPos - (offset/2), currentWord.rectTransform.position.y, 0.0f);
 		//currentLetter.rectTransform.position = new Vector3(curXPos - (offset/2) - ((word.Length/2) * word.Length), currentWord.rectTransform.position.y, 0.0f);
 		currentWord.rectTransform.position = new Vector3(currentLetter.rectTransform.position.x, currentLetter.rectTransform.position.y, 0.0f);
