@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour {
 
 	void Start(){
 		Messenger.AddListener<string>("letter selected", letterPlayed);
+		Messenger.AddListener<string>("game start", startGame);
 	}
 	
 	void Awake() {
@@ -59,6 +60,10 @@ public class GameController : MonoBehaviour {
 		}
 		return allAudio;
 	}
+	private void startGame(string nothing)
+	{
+		loadWords();
+	}
 
 	public void loadWords()
 	{
@@ -66,8 +71,7 @@ public class GameController : MonoBehaviour {
 		int activeListID = PlayerPrefs.GetInt ("ActiveWordList");
 		words = getWords (activeListID);
 		words.Shuffle();
-		
-		Debug.Log(" LOADED " + words.Count.ToString () + " WORDS. " + allWordsHaveAudio ().ToString ());	
+		//Debug.Log(" LOADED " + words.Count.ToString () + " WORDS. " + allWordsHaveAudio ().ToString ());	
 		Messenger.Broadcast<string>("show new word", getNextWord());
 	}
 

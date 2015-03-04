@@ -2,19 +2,16 @@
 using System.Collections;
 
 public class LetterCatchController : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public GameObject startPanel;
 
 	public void goBackToGameSelection()
 	{
 		Application.LoadLevel ("GameSelection");
+	}
+
+	public void startGame()
+	{
+		startPanel.SetActive (false);
+		Messenger.Broadcast<string>("game start", "");
 	}
 }

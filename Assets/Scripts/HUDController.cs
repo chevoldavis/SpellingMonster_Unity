@@ -7,12 +7,12 @@ public class HUDController : MonoBehaviour
 		public Text currentWord;
 		public Text currentLetter;
 		public Text currentProgress;
-		public GameController gController;
 		public GameObject star1;
 		public GameObject star2;
 		public GameObject star3;
 		private int numTries = 3;
 		private int wordProgress = 0;
+		private bool gameRunning = false;
 
 		// Use this for initialization
 		void Start ()
@@ -23,7 +23,6 @@ public class HUDController : MonoBehaviour
 				Messenger.AddListener<string> ("remove star", removeStar);
 				numTries = 3;
 				wordProgress = 0;
-				gController.loadWords ();
 		}
 	
 		// Update is called once per frame
