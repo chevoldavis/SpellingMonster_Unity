@@ -78,8 +78,7 @@ public class GameController : MonoBehaviour {
 			curLetter = curWord[curLetterIndex];
 			curLetterIndex = curLetterIndex + 1;
 		}
-		
-		Messenger.Broadcast<string>("new needed letter", curLetter.ToString ());
+		Messenger.Broadcast<string>("new needed letter", char.ToUpper (curLetter).ToString ());
 	}
 	
 	public string getNextWord()
@@ -99,10 +98,10 @@ public class GameController : MonoBehaviour {
 
 	private void letterPlayed(string letter)
 	{
-		Debug.Log("LOOKING FOR: " + curLetter.ToString () + " PLAYED: " + letter);
+		//Debug.Log("LOOKING FOR: " + curLetter.ToString () + " PLAYED: " + letter);
 		if(letter.ToLower().Equals(curLetter.ToString().ToLower ()))
 		{
-			Debug.Log("CORRECT");
+			//Debug.Log("CORRECT");
 			if(curLetterIndex < curWord.Length){
 				getNextLetter();
 				Messenger.Broadcast<string>("show new letter", letter);
@@ -113,8 +112,9 @@ public class GameController : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log("INCORRECT");
+			//Debug.Log("INCORRECT");
 			//REMOVE STAR
+			Messenger.Broadcast<string>("remove star", "");
 		}
 	}
 

@@ -16,12 +16,7 @@ public class AppleController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//Messenger.AddListener<string>("new needed letter", setNeededLetter);
 		InvokeRepeating("SpawnApple", 1, 3);
-	}
-	
-	// Update is called once per frame
-	void Update () {
 	}
 
 	private void setNeededLetter(string newNeededLetter)
@@ -41,7 +36,6 @@ public class AppleController : MonoBehaviour {
 			letter.text = neededLetter;
 			spawnCount = 0;
 		}else{
-			//Debug.Log(randomLetter);
 			letter.text = randomLetter;
 			spawnCount = spawnCount+1;
 		}
