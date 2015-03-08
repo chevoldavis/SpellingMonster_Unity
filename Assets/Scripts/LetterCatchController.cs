@@ -9,6 +9,11 @@ public class LetterCatchController : MonoBehaviour {
 		Application.LoadLevel ("GameSelection");
 	}
 
+	public void pauseGame()
+	{
+		Messenger.Broadcast<string>("game pause", "");
+	}
+
 	public void startGame()
 	{
 		startPanel.SetActive (false);

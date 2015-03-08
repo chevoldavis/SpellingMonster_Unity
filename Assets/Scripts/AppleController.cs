@@ -18,12 +18,19 @@ public class AppleController : MonoBehaviour {
 	void Start () {
 		Messenger.AddListener<string>("new needed letter", setNeededLetter);
 		Messenger.AddListener<string>("game start", startDroppingApples);
+		Messenger.AddListener<string> ("game pause", pauseDropping);
+		Messenger.AddListener<string> ("game resume", startDroppingApples);
 		InvokeRepeating("SpawnApple", 1, 3);
 	}
 
 	private void setNeededLetter(string newNeededLetter)
 	{
 		neededLetter = newNeededLetter;
+	}
+
+	private void pauseDropping(string nothing)
+	{
+		gameRunning = false;
 	}
 
 	private void startDroppingApples(string nothing)
