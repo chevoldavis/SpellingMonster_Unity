@@ -96,6 +96,7 @@ public class GameController : MonoBehaviour {
 			Messenger.Broadcast<string>("word progress update", curWordIndex.ToString() + "/" + words.Count);
 		}else{
 			Debug.Log("**** GAME OVER ****");
+			Messenger.Broadcast<int>("game end", PlayerPrefs.GetInt("CurGameNumTries"));
 		}
 		return newWord;
 	}

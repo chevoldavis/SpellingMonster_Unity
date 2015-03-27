@@ -8,7 +8,6 @@ public class PauseController : MonoBehaviour {
 
 
 	void Awake (){
-		//gameObject.SetActive(false);
 	}
 
 	void Start () {

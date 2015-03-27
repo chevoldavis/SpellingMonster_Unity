@@ -23,6 +23,7 @@ public class HUDController : MonoBehaviour
 				Messenger.AddListener<string> ("remove star", removeStar);
 				numTries = 3;
 				wordProgress = 0;
+				PlayerPrefs.SetInt("CurGameNumTries",3);
 		}
 	
 		// Update is called once per frame
@@ -56,12 +57,16 @@ public class HUDController : MonoBehaviour
 				case 1:
 						star1.SetActive (false);
 						Debug.Log ("GAME OVER - NO MORE TRIES");
+						PlayerPrefs.SetInt("CurGameNumTries",0);
+						Messenger.Broadcast<int>("game end", 0);
 						break;
 				case 2:
 						star2.SetActive (false);
+						PlayerPrefs.SetInt("CurGameNumTries",1);
 						break;
 				case 3:
 						star3.SetActive (false);
+						PlayerPrefs.SetInt("CurGameNumTries",2);
 						break;
 				default:
 						break;
