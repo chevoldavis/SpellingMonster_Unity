@@ -36,8 +36,14 @@ public class HomeManager : MonoBehaviour {
 				Debug.Log ("Launching past Parental Gate");
 				launched=true;
 				popInAnimator.Play ("PGrollOut");
+				loadParentalGate();
 			}
 		}
+	}
+
+	private void loadParentalGate()
+	{
+		Application.LoadLevel ("SettingsMenu");
 	}
 
 	public void gotoWordList()
