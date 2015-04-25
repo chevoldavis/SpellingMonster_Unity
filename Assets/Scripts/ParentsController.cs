@@ -16,4 +16,8 @@ public class ParentsController : MonoBehaviour {
 	public void gobackHome(){
 		Application.LoadLevel ("Home");
 	}
+
+	public void loadSettings(){
+		Application.LoadLevel("Settings");
+	}
 }
