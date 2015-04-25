@@ -33,12 +33,20 @@ public class HUDController : MonoBehaviour
 
 		private void displayProgress (string progress)
 		{
-				currentProgress.text = progress;
+			if(PlayerPrefs.GetInt("Uppercase") == 1){
+				currentProgress.text = progress.ToUpper ();
+			}else{
+				currentProgress.text = progress.ToLower ();
+			}
 		}
 
 		private void displayWord (string newWord)
 		{
-				currentWord.text = newWord;
+			if(PlayerPrefs.GetInt("Uppercase") == 1){
+				currentWord.text = newWord.ToUpper();
+			}else{
+				currentWord.text = newWord.ToLower();
+			}
 				currentLetter.text = "";
 				wordProgress = 0;
 				alignWordsAndLetters ();
@@ -46,9 +54,14 @@ public class HUDController : MonoBehaviour
 
 		private void displayLetter (string newLetter)
 		{
-		currentLetter.text = currentWord.text.Substring(0,wordProgress + 1);
-				alignWordsAndLetters ();
-				wordProgress = wordProgress + 1;
+			if(PlayerPrefs.GetInt("Uppercase") == 1){
+				currentLetter.text = currentWord.text.Substring(0,wordProgress + 1).ToUpper();
+			}else{
+				currentLetter.text = currentWord.text.Substring(0,wordProgress + 1).ToLower();
+			}
+			
+			alignWordsAndLetters ();
+			wordProgress = wordProgress + 1;
 		}
 
 		private void removeStar (string nothing)

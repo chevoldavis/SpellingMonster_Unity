@@ -9,7 +9,8 @@ public class AppleController : MonoBehaviour {
 	private string neededLetter = "A";
 	private bool gameRunning = false;
 
-	string[] Alphabet = new string[26] {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+	string[] UppercaseAlphabet = new string[26] {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+	string[] LowercaseAlphabet = new string[26] {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
 	void Awake(){
 	}
@@ -25,7 +26,12 @@ public class AppleController : MonoBehaviour {
 
 	private void setNeededLetter(string newNeededLetter)
 	{
-		neededLetter = newNeededLetter;
+		if(PlayerPrefs.GetInt("Uppercase") == 1){
+			neededLetter = newNeededLetter.ToUpper();
+		}else{
+			neededLetter = newNeededLetter.ToLower();
+		}
+
 	}
 
 	private void pauseDropping(string nothing)
@@ -44,7 +50,13 @@ public class AppleController : MonoBehaviour {
 			apple.transform.parent = gameObject.transform;
 			apple.transform.position = new Vector3 (Random.Range(30.0f, 640.0f), transform.position.y, 0);
 			Text letter = apple.GetComponentInChildren<Text>();
-			string randomLetter = Alphabet[Random.Range(0, Alphabet.Length)];
+			string randomLetter;
+			if(PlayerPrefs.GetInt("Uppercase") == 1){
+				randomLetter = UppercaseAlphabet[Random.Range(0, UppercaseAlphabet.Length)];
+			}else{
+				randomLetter = LowercaseAlphabet[Random.Range(0, LowercaseAlphabet.Length)];
+			}
+
 			apple.GetComponent<Rigidbody2D>().gravityScale = 20.0f;
 
 			if(spawnCount >= neededLetterFrequency){
