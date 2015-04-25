@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using SimpleSQL;
 
 public class HomeManager : MonoBehaviour {
-	public bool mouseDown = false;
-	public float timeMouseDown = 0.0f;
 	public Animation popInAnimation;
 	public Text txtVersion;  
 	public SimpleSQLManager dbManager;
@@ -15,7 +14,20 @@ public class HomeManager : MonoBehaviour {
 		public string id { get; set; }
 	}
 
+	public class wordPackage
+	{
+		[PrimaryKey]
+		public int id { get; set; }
+		public string word { get; set; }
+		public int wordListID { get; set; }
+		public string fileName { get; set; }
+	}
+	
+	private List<wordPackage> words;
+
 	private bool launched = false;
+	private bool mouseDown = false;
+	private float timeMouseDown = 0.0f;
 	public string versionNum;
 
 
@@ -32,13 +44,11 @@ public class HomeManager : MonoBehaviour {
 		if(mouseDown == true){
 			timeMouseDown += Time.fixedDeltaTime;
 			if(timeMouseDown>3.0 && !launched){
-				Debug.Log ("Launching past Parental Gate");
+				//Debug.Log ("Launching past Parental Gate");
 				launched=true;
 				popInAnimation.Play("PGrollOut");
 				loadParentalGate();
 			}
-		}else{
-
 		}
 	}
 
@@ -58,20 +68,56 @@ public class HomeManager : MonoBehaviour {
 		activeList = PlayerPrefs.GetInt ("ActiveWordList");
 		if(activeList>0){
 			Debug.Log ("We have an active list: "+activeList);
-			Application.LoadLevel ("GameSelection");
+			
+			//If they have audio selection enabled, make sure all words have audio
+			if(PlayerPrefs.GetInt("Audible")==1){
+				words = getWords (getActiveList());
+				if(allWordsHaveAudio()){
+					Application.LoadLevel ("GameSelection");
+				}else{
+					MessageCenterController.Instance.displayMessage ("You have selected Use Audible Words, but not all words have audio.");
+				}
+			}else{
+				Application.LoadLevel ("GameSelection");
+			}
 		}else{
 			//try and grab from the db
 			int curActiveList = getActiveList();
 			if(curActiveList > 0){
 				activeList = curActiveList;
 				PlayerPrefs.SetInt ("ActiveWordList",curActiveList);
+				//If they have audio selection enabled, make sure all words have audio
+				if(PlayerPrefs.GetInt("Audible")==1){
+					words = getWords (getActiveList());
+					if(!allWordsHaveAudio()){
+						MessageCenterController.Instance.displayMessage ("You have selected Use Audible Words, but not all words have audio.");
+					}
+				}
 			}else{
 				Debug.Log ("User has no active lists or no lists to make active");
 				MessageCenterController.Instance.displayMessage ("You have no active lists. Tap the Words button to add a list or to make a list active.");
 			}
 		}
+	}
 
-		//MessageCenterController.Instance.displayMessage ("Going to games screen");
+	private List<wordPackage> getWords (int activeID)
+	{	
+		string sql = "SELECT w.id, w.word, w.wordListID, a.fileName FROM SM_Words w LEFT JOIN SM_WordAudio a ON w.id = a.wordID WHERE w.wordListID = " + activeID;
+		List<wordPackage> wordList = dbManager.Query<wordPackage> (sql);
+		
+		return wordList;
+	}
+
+	private bool allWordsHaveAudio()
+	{
+		bool allAudio = true;
+		foreach (wordPackage word in words)
+		{
+			if(string.IsNullOrEmpty ( word.fileName)){
+				allAudio = false;
+			}
+		}
+		return allAudio;
 	}
 
 	private int getActiveList()

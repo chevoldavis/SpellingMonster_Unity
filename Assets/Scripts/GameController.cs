@@ -49,17 +49,6 @@ public class GameController : MonoBehaviour {
 		return wordList;
 	}
 
-	private bool allWordsHaveAudio()
-	{
-		bool allAudio = true;
-		foreach (wordPackage word in words)
-		{
-			if(string.IsNullOrEmpty ( word.fileName)){
-				allAudio = false;
-			}
-		}
-		return allAudio;
-	}
 	private void startGame(string nothing)
 	{
 		loadWords();
@@ -71,7 +60,6 @@ public class GameController : MonoBehaviour {
 		int activeListID = PlayerPrefs.GetInt ("ActiveWordList");
 		words = getWords (activeListID);
 		words.Shuffle();
-		//Debug.Log(" LOADED " + words.Count.ToString () + " WORDS. " + allWordsHaveAudio ().ToString ());	
 		Messenger.Broadcast<string>("show new word", getNextWord());
 	}
 
@@ -92,6 +80,7 @@ public class GameController : MonoBehaviour {
 			newWord = words[curWordIndex].word;
 			curWord = newWord;
 			getNextLetter();
+			PlayerPrefs.SetInt("CurGameWord", words[curWordIndex].id);
 			curWordIndex = curWordIndex + 1;
 			Messenger.Broadcast<string>("word progress update", curWordIndex.ToString() + "/" + words.Count);
 		}else{

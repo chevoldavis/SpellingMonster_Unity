@@ -1,18 +1,32 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using SimpleSQL;
+using System.Collections.Generic;
+using System;
+using System.IO;
+using System.Net;
 
 public class HUDController : MonoBehaviour
 {
+		public SimpleSQLManager dbManager;
 		public Text currentWord;
 		public Text currentLetter;
 		public Text currentProgress;
 		public GameObject star1;
 		public GameObject star2;
 		public GameObject star3;
+		public GameObject audibleBtn;
+		public AudioSource audio;
 		private int numTries = 3;
 		private int wordProgress = 0;
 		private bool gameRunning = false;
+	
+		public class audioContent
+		{
+			public string fileName { get; set; }
+		}
+
 
 		// Use this for initialization
 		void Start ()
@@ -24,11 +38,72 @@ public class HUDController : MonoBehaviour
 				numTries = 3;
 				wordProgress = 0;
 				PlayerPrefs.SetInt("CurGameNumTries",3);
+				if(PlayerPrefs.GetInt("Audible") == 1){
+					if(PlayerPrefs.GetInt("ShowWord") == 0){
+						Color clearColor = new Color();
+						clearColor.a = 0.0f;
+						currentWord.color = clearColor;
+					}
+					audibleBtn.SetActive(true);
+				}else{	
+					audibleBtn.SetActive(false);
+				}
 		}
 	
 		// Update is called once per frame
 		void Update ()
 		{
+		}
+
+		public void playAudio(){
+			if(wordHasAudio()){
+				StartCoroutine (playClip ());
+			}
+		}
+
+		IEnumerator playClip ()
+		{
+			//get audio file	
+			WWW AudioToLoadPath = new WWW ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
+			
+			yield return AudioToLoadPath;
+			
+			if (WebFileExists ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav")) {
+				audio.clip = AudioToLoadPath.GetAudioClip (false);
+				
+				AudioListener.volume = 1.0f;
+				audio.ignoreListenerVolume = true;
+				audio.volume = 1.0f;
+				audio.Play ();
+				Debug.Log ("Playing File");
+			}
+		}
+
+		static public bool WebFileExists (string uri)
+		{
+			long fileLength = -1;
+			WebRequest request = HttpWebRequest.Create (uri);
+			request.Method = "HEAD";
+			WebResponse resp = null;
+			try {
+				resp = request.GetResponse ();
+			} catch {
+				resp = null;
+			}
+			if (resp != null) {
+				long.TryParse (resp.Headers.Get ("Content-Length"), out fileLength);
+			}
+			return fileLength > 0;
+		}
+
+		private bool wordHasAudio ()
+		{
+			bool hasAudio = false;
+		
+			string sql = "SELECT fileName FROM SM_WordAudio WHERE wordID = " + PlayerPrefs.GetInt ("CurGameWord");
+			audioContent myAudio = dbManager.QueryFirstRecord<audioContent> (out hasAudio, sql);
+
+			return hasAudio;
 		}
 
 		private void displayProgress (string progress)
