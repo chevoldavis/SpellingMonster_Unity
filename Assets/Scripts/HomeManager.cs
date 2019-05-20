@@ -35,8 +35,10 @@ public class HomeManager : MonoBehaviour {
 	void Start () {
 		Application.targetFrameRate = -1;
 		QualitySettings.vSyncCount = 0;
+		Time.timeScale = 1;
 		launched = false;
 		txtVersion.text = "v " + versionNum;
+		loadUserSettings();
 	}
 	
 	// Update is called once per frame
@@ -49,6 +51,47 @@ public class HomeManager : MonoBehaviour {
 				popInAnimation.Play("PGrollOut");
 				loadParentalGate();
 			}
+		}
+	}
+
+	private void loadUserSettings()
+	{
+		Debug.Log ("Loading user settings");
+		
+		//Check for any BKG Music settings, if none add defaults
+		if (PlayerPrefs.HasKey("BkgMusic")){
+		}else{
+			PlayerPrefs.SetInt("BkgMusic",1);
+		}
+		
+		//Check for any SoundFX settings, if none add defaults
+		if (PlayerPrefs.HasKey("SoundFx")){
+		}else{
+			PlayerPrefs.SetInt("SoundFx",1);
+		}
+		
+		//Check for any Uppercase settings, if none add defaults
+		if (PlayerPrefs.HasKey("Uppercase")){
+		}else{
+			PlayerPrefs.SetInt("Uppercase",1);
+		}
+		
+		//Check for any Audible settings, if none add defaults
+		if (PlayerPrefs.HasKey("Audible")){
+		}else{
+			PlayerPrefs.SetInt("Audible",1);
+		}
+		
+		//Check for any ShowWord settings, if none add defaults
+		if (PlayerPrefs.HasKey("ShowWord")){
+		}else{
+			PlayerPrefs.SetInt("ShowWord",1);
+		}
+		
+		//Check for any GameSpeed settings, if none add defaults
+		if (PlayerPrefs.HasKey("GameSpeed")){
+		}else{
+			PlayerPrefs.SetInt("GameSpeed",3);
 		}
 	}
 

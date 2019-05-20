@@ -18,6 +18,7 @@ public class GameSelectionController : MonoBehaviour {
 	void Start () {
 		Application.targetFrameRate = -1;
 		QualitySettings.vSyncCount = 0;
+		Time.timeScale = 1;
 	}
 	
 	// Update is called once per frame
