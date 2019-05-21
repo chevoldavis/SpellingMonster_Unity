@@ -22,7 +22,7 @@ public class AppleController : MonoBehaviour
         Messenger.AddListener<string>("game start", startDroppingApples);
         Messenger.AddListener<string>("game pause", pauseDropping);
         Messenger.AddListener<string>("game resume", startDroppingApples);
-        InvokeRepeating("SpawnApple", 1, 3);
+        InvokeRepeating("SpawnApple", 1, Random.Range(2, 4));
     }
 
     private void setNeededLetter(string newNeededLetter)
@@ -55,8 +55,9 @@ public class AppleController : MonoBehaviour
             GameObject apple = Instantiate(applePrefab, new Vector3(transform.position.x, 400, 0), transform.rotation) as GameObject;
             apple.transform.parent = gameObject.transform;
             apple.transform.position = new Vector3(Random.Range(30.0f, Screen.width - 30), transform.position.y, 0);
-            apple.GetComponent<Rigidbody2D>().gravityScale = Random.Range(20.0f, 35.0f);
-            apple.transform.localScale = Vector3.one;
+            //apple.GetComponent<Rigidbody2D>().gravityScale = Random.Range(20.0f, 35.0f);
+            //apple.GetComponent<Rigidbody2D>().gravityScale = 10.0f;
+            apple.transform.localScale = new Vector3(1, 1, 1); //Vector3.one;
 
             Text letter = apple.GetComponentInChildren<Text>();
             string randomLetter = (PlayerPrefs.GetInt("Uppercase") == 1) ? UppercaseAlphabet[Random.Range(0, UppercaseAlphabet.Length)] : LowercaseAlphabet[Random.Range(0, LowercaseAlphabet.Length)];

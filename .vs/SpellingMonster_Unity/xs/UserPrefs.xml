@@ -1,24 +1,33 @@
 ﻿<Properties StartupConfiguration="{16BFBE35-7AD4-C63F-BF1B-42981D2712E1}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/AppleController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CrystalFramework/Utility/SafeArea.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/HomeManager.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/HUDController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/AppleController.cs" Line="7" Column="37" />
-      <File FileName="Assets/Scripts/GameOverController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/PauseController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/SettingsController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/LeafController.cs" Line="16" Column="42" />
-      <File FileName="Assets/Scripts/ListClientServer.cs" Line="14" Column="1" />
-      <File FileName="Assets/Scripts/ListClient.cs" Line="67" Column="15" />
-      <File FileName="Assets/Scripts/ListServer.cs" Line="50" Column="15" />
-      <File FileName="Assets/Scripts/WordDBUI.cs" Line="178" Column="11" />
+      <File FileName="Assets/Scripts/DBUI.cs" Line="191" Column="27" />
       <File FileName="Assets/Scripts/Apple.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/AppleController.cs" Line="59" Column="15" />
+      <File FileName="Assets/Scripts/LeafController.cs" Line="32" Column="36" />
+      <File FileName="Assets/Scripts/HomeManager.cs" Line="129" Column="53" />
+      <File FileName="Assets/CrystalFramework/Utility/SafeArea.cs" Line="16" Column="75" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="SpellingMonster_Unity" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="CrystalFramework" expanded="True">
+                <Node name="Utility" expanded="True">
+                  <Node name="SafeArea.cs" selected="True" />
+                </Node>
+              </Node>
+              <Node name="Scripts" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="b8d265b3-964d-4a10-91f9-45b14384bbfc" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="654ac2d8-da9d-421d-a078-b372b409a14d" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
