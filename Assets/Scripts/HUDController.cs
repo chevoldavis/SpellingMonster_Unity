@@ -64,11 +64,11 @@ public class HUDController : MonoBehaviour
 		IEnumerator playClip ()
 		{
 			//get audio file	
-			WWW AudioToLoadPath = new WWW ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav");
+			WWW AudioToLoadPath = new WWW ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurGameWord").ToString () + ".wav");
 			
 			yield return AudioToLoadPath;
 			
-			if (WebFileExists ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurrentWord").ToString () + ".wav")) {
+			if (WebFileExists ("file://" + Application.persistentDataPath + "/" + PlayerPrefs.GetInt ("CurGameWord").ToString () + ".wav")) {
 				audio.clip = AudioToLoadPath.GetAudioClip (false);
 				
 				AudioListener.volume = 1.0f;
