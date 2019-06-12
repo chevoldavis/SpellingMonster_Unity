@@ -1,0 +1,28 @@
+{
+       // Configure glob patterns for excluding files and folders.
+       "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/*.meta": true,
+        "**/*.*.meta": true,
+        "**/*.unity": true,
+        "**/*.unityproj": true,
+        "**/*.mat": true,
+        "**/*.fbx": true,
+        "**/*.FBX": true,
+        "**/*.tga": true,
+        "**/*.cubemap": true,
+        "**/*.prefab": true,
+        "**/Library": true,
+        "**/ProjectSettings": true,
+        "**/Temp": true
+    },
+    "editor.parameterHints.cycle": true,
+    "editor.renderControlCharacters": true,
+    "editor.scrollBeyondLastLine": false,
+    "editor.showFoldingControls": "always",
+    "editor.tabCompletion": "on",
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+    "editor.formatOnType": true
+}
